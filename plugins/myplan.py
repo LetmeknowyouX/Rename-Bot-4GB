@@ -11,30 +11,38 @@ from helper.database import daily as daily_
 from helper.date import check_expi
 from helper.database import uploadlimit, usertype
 
-
 @Client.on_message(filters.private & filters.command(["myplan"]))
 async def start(client, message):
     used_ = find_one(message.from_user.id)
-    daily = used_["daily"]
-    expi = daily - \
-        int(time.mktime(time.strptime(str(date_.today()), '%Y-%m-%d')))
+    
+    # Check if "daily" exists in used_
+    if "daily" in used_:
+        daily = used_["daily"]
+        expi = daily - int(time.mktime(time.strptime(str(date_.today()), '%Y-%m-%d')))
+    else:
+        daily = None
+        expi = 0
+    
     if expi != 0:
         today = date_.today()
         pattern = '%Y-%m-%d'
         epcho = int(time.mktime(time.strptime(str(today), pattern)))
         daily_(message.from_user.id, epcho)
         used_limit(message.from_user.id, 0)
+        
     _newus = find_one(message.from_user.id)
     used = _newus["used_limit"]
     limit = _newus["uploadlimit"]
     remain = int(limit) - int(used)
     user = _newus["usertype"]
     ends = _newus["prexdate"]
+    
     if ends:
         pre_check = check_expi(ends)
         if pre_check == False:
             uploadlimit(message.from_user.id, 2147483652)
             usertype(message.from_user.id, "Free")
+    
     if ends == None:
         text = f"**User ID :** `{message.from_user.id}` \n**Name :** {message.from_user.mention} \n\n**🏷 Plan :** {user} \n\n✓ Upload 2GB Files \n✓ Daily Upload : {humanbytes(limit)} \n✓ Today Used : {humanbytes(used)} \n✓ Remain : {humanbytes(remain)} \n✓ Timeout : 2 Minutes \n✓ Parallel process : Unlimited \n✓ Time Gap : Yes \n\n**Validity :** Lifetime"
     else:
@@ -45,12 +53,3 @@ async def start(client, message):
         await message.reply(text, quote=True, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("💳 Upgrade", callback_data="upgrade"), InlineKeyboardButton("✖️ Cancel", callback_data="cancel")]]))
     else:
         await message.reply(text, quote=True, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("✖️ Cancel ✖️", callback_data="cancel")]]))
-
-
-
-
-
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Developer @JishuDeveloper
