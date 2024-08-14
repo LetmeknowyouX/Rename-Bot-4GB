@@ -19,6 +19,7 @@ bot = Client(
     plugins=dict(root='plugins')
 )
 
+# Start both clients if STRING is set
 if STRING:
     apps = [Client2, bot]
     try:
