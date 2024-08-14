@@ -70,10 +70,17 @@ async def send_doc(client, message):
     prrename = bot_data['total_rename']
     prsize = bot_data['total_size']
     user_deta = find_one(user_id)
-    used_date = user_deta["date"]
-    buy_date = user_deta["prexdate"]
-    daily = user_deta["daily"]
-    user_type = user_deta["usertype"]
+
+    # Ensure that the 'date' key exists before accessing it
+    if "date" in user_deta:
+        used_date = user_deta["date"]
+    else:
+        await message.reply_text("There was an issue retrieving your data. Please try again later.")
+        return
+
+    buy_date = user_deta.get("prexdate")
+    daily = user_deta.get("daily", 0)
+    user_type = user_deta.get("usertype", "Free")
 
     c_time = time.time()
 
@@ -96,8 +103,8 @@ async def send_doc(client, message):
         file_id = file.file_id
         value = 2147483648
         used_ = find_one(message.from_user.id)
-        used = used_["used_limit"]
-        limit = used_["uploadlimit"]
+        used = used_.get("used_limit", 0)
+        limit = used_.get("uploadlimit", value)
         expi = daily - int(time.mktime(time.strptime(str(date_.today()), '%Y-%m-%d')))
         if expi != 0:
             today = date_.today()
@@ -112,7 +119,7 @@ async def send_doc(client, message):
         if value < file.file_size:
             
             if STRING:
-                if buy_date == None:
+                if buy_date is None:
                     await message.reply_text(f" Yᴏᴜ Cᴀɴ'ᴛ Uᴘʟᴏᴀᴅ Mᴏʀᴇ Tʜᴀɴ 2GB Fɪʟᴇ\n\nYᴏᴜʀ Pʟᴀɴ Dᴏᴇsɴ'ᴛ Aʟʟᴏᴡ Tᴏ Uᴘʟᴏᴀᴅ Fɪʟᴇs Tʜᴀᴛ Aʀᴇ Lᴀʀɢᴇʀ Tʜᴀɴ 2GB\n\nUpgrade Yᴏᴜʀ Pʟᴀɴ Tᴏ Rᴇɴᴀᴍᴇ Fɪʟᴇs Lᴀʀɢᴇʀ Tʜᴀɴ 2GB", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("💳 Upgrade", callback_data="upgrade")]]))
                     return
                 pre_check = check_expi(buy_date)
@@ -124,25 +131,6 @@ async def send_doc(client, message):
                     uploadlimit(message.from_user.id, 2147483648)
                     usertype(message.from_user.id, "Free")
 
-                    await message.reply_text(f'Yᴏᴜʀ Pʟᴀɴ Exᴘɪʀᴇᴅ Oɴ {buy_date}', quote=True)
-                    return
-            else:
-                await message.reply_text("Yᴏᴜ Cᴀɴ'ᴛ Uᴘʟᴏᴀᴅ Mᴏʀᴇ Tʜᴀɴ 2GB Fɪʟᴇ\n\nYᴏᴜʀ Pʟᴀɴ Dᴏᴇsɴ'ᴛ Aʟʟᴏᴡ Tᴏ Uᴘʟᴏᴀᴅ Fɪʟᴇs Tʜᴀᴛ Aʀᴇ Lᴀʀɢᴇʀ Tʜᴀɴ 2GB\n\nUpgrade Yᴏᴜʀ Pʟᴀɴ Tᴏ Rᴇɴᴀᴍᴇ Fɪʟᴇs Lᴀʀɢᴇʀ Tʜᴀɴ 2GB")
-                return
-        else:
-            if buy_date:
-                pre_check = check_expi(buy_date)
-                if pre_check == False:
-                    uploadlimit(message.from_user.id, 2147483648)
-                    usertype(message.from_user.id, "Free")
-            
-            filesize = humanize.naturalsize(file.file_size)
-            fileid = file.file_id
-            total_rename(int(botid), prrename)
-            total_size(int(botid), prsize, file.file_size)
-            await message.reply_text(f"""__Wʜᴀᴛ Dᴏ Yᴏᴜ Wᴀɴᴛ Mᴇ Tᴏ Dᴏ Wɪᴛʜ Tʜɪs Fɪʟᴇ ?__\n\n**Fɪʟᴇ Nᴀᴍᴇ** :- `{filename}`\n**Fɪʟᴇ Sɪᴢᴇ** :- {filesize}\n**DC ID** :- {dcid}""", reply_to_message_id=message.id, reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton("📝 Rᴇɴᴀᴍᴇ", callback_data="rename"),
-                  InlineKeyboardButton("✖️ Cᴀɴᴄᴇʟ", callback_data="cancel")]]))
-              
+                    await message.reply_text(f'Yᴏᴜ              
               
               
