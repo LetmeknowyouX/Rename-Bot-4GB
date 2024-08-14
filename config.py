@@ -13,7 +13,7 @@ LOG_CHANNEL = os.environ.get("LOG_CHANNEL")
 DB_URL = os.environ.get("DB_URL")
 DB_NAME = os.environ.get("DB_NAME", "madflixbotz")
 
-STRING = os.environ.get("STRING")
+# Optional default value for BOT_PIC
 BOT_PIC = os.environ.get("BOT_PIC", "https://graph.org/file/ad48ac09b1e6f30d2dae4.jpg")
 
 # Validate required variables
