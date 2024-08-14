@@ -1,37 +1,33 @@
 from PIL import Image
 import os
-import random
-import io
-import subprocess
 import ffmpeg
+from PIL import Image
 
-async def take_screen_shot(video_path, output_dir, timestamp):
-    output_path = os.path.join(output_dir, f"thumbnail_{timestamp}.jpg")
-    command = (
-        ffmpeg
-        .input(video_path, ss=timestamp)
-        .output(output_path, vframes=1)
-        .run(capture_stdout=True, capture_stderr=True)
-    )
-    return output_path
+# Set the path to the ffmpeg executable
+FFMPEG_PATH = '/path/to/your/helper/folder/ffmpeg'  # Update this path
 
-async def fix_thumb(thumb_path):
-    img = Image.open(thumb_path)
-    img = img.convert("RGB")
-    img = img.resize((320, 320))
-    new_thumb_path = thumb_path.replace('.jpg', '_fixed.jpg')
-    img.save(new_thumb_path, "JPEG")
-    return img.size, new_thumb_path
+def take_screen_shot(file_path, output_folder, timestamp):
+    try:
+        output_file = os.path.join(output_folder, 'screenshot.jpg')
+        (
+            ffmpeg
+            .input(file_path, ss=timestamp)
+            .output(output_file, vframes=1)
+            .run(cmd=FFMPEG_PATH)
+        )
+        return output_file
+    except Exception as e:
+        print(f"Error taking screenshot: {e}")
+        return None
 
-def humanbytes(byte_size):
-    """Convert bytes to a human-readable format."""
-    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
-        if byte_size < 1024:
-            return f"{byte_size:.2f} {unit}"
-        byte_size /= 1024
-
-def timedelta(seconds):
-    """Convert seconds to a readable time format."""
-    m, s = divmod(seconds, 60)
-    h, m = divmod(m, 60)
-    return f"{int(h):02}:{int(m):02}:{int(s):02}"
+def fix_thumb(image_path):
+    try:
+        img = Image.open(image_path)
+        img = img.convert("RGB")
+        img = img.resize((320, 320))
+        thumb_path = image_path.replace(".jpg", "_thumb.jpg")
+        img.save(thumb_path, "JPEG")
+        return thumb_path
+    except Exception as e:
+        print(f"Error fixing thumbnail: {e}")
+        return None
