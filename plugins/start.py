@@ -120,17 +120,15 @@ async def send_doc(client, message):
             
             if STRING:
                 if buy_date is None:
-                    await message.reply_text(f" Yᴏᴜ Cᴀɴ'ᴛ Uᴘʟᴏᴀᴅ Mᴏʀᴇ Tʜᴀɴ 2GB Fɪʟᴇ\n\nYᴏᴜʀ Pʟᴀɴ Dᴏᴇsɴ'ᴛ Aʟʟᴏᴡ Tᴏ Uᴘʟᴏᴀᴅ Fɪʟᴇs Tʜᴀᴛ Aʀᴇ Lᴀʀɢᴇʀ Tʜᴀɴ 2GB\n\nUpgrade Yᴏᴜʀ Pʟᴀɴ Tᴏ Rᴇɴᴀᴍᴇ Fɪʟᴇs Lᴀʀɢᴇʀ Tʜᴀɴ 2GB", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("💳 Upgrade", callback_data="upgrade")]]))
+                    await message.reply_text(f"You Can't Upload More Than 2GB File\n\nYour Plan Doesn't Allow To Upload Files That Are Larger Than 2GB\n\nUpgrade Your Plan To Rename Files Larger Than 2GB", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("💳 Upgrade", callback_data="upgrade")]]))
                     return
                 pre_check = check_expi(buy_date)
-                if pre_check == True:
-                    await message.reply_text(f"""__Wʜᴀᴛ Dᴏ Yᴏᴜ Wᴀɴᴛ Mᴇ Tᴏ Dᴏ Wɪᴛʜ Tʜɪs Fɪʟᴇ ?__\n\n**Fɪʟᴇ Nᴀᴍᴇ** :- `{filename}`\n**Fɪʟᴇ Sɪᴢᴇ** :- {humanize.naturalsize(file.file_size)}\n**DC ID** :- {dcid}""", reply_to_message_id=message.id, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("📝 Rename", callback_data="rename"), InlineKeyboardButton("✖️ Cancel", callback_data="cancel")]]))
-                    total_rename(int(botid), prrename)
-                    total_size(int(botid), prsize, file.file_size)
-                else:
-                    uploadlimit(message.from_user.id, 2147483648)
-                    usertype(message.from_user.id, "Free")
-
-                    await message.reply_text(f'Yᴏᴜ              
-              
-              
+                if pre_check is True:
+                    await message.reply_text(f"Your user plan has expired. Please upgrade your account to rename larger files.", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("💳 Upgrade", callback_data="upgrade")]]))
+                    return
+                await message.reply_text("**Sorry! I cannot upload files larger than 2GB on Telegram at the moment.**")
+                return
+            else:
+                if buy_date is None:
+                    await message.reply_text(f"You Can't Upload More Than 2GB File\n\nYour Plan Doesn't Allow To Upload Files That Are Larger Than 2GB\n\nUpgrade Your Plan To Rename Files Larger Than 2GB", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("💳 Upgrade", callback_data="upgrade")]]))
+                    return
